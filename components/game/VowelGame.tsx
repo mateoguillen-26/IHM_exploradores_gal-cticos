@@ -19,44 +19,37 @@ interface VowelGameProps {
 // --- Iconos y Componentes Gráficos ---
 
 const FlippableStar: React.FC<{
-  vowel: string;
-  isFlipped: boolean;
-  isDiscovered: boolean;
-  onClick: () => void;
+    vowel: string;
+    isFlipped: boolean;
+    isDiscovered: boolean;
+    onClick: () => void;
 }> = ({ vowel, isFlipped, isDiscovered, onClick }) => {
-  return (
-    <button
-      onClick={onClick}
-      className="group w-20 h-20 md:w-24 md:h-24 [perspective:1000px] focus:outline-none focus-visible:ring-4 focus-visible:ring-yellow-300 rounded-full"
-      aria-label={`Reproducir sonido de la vocal ${vowel}`}
-    >
-      <div
-        className={`relative w-full h-full text-center transition-transform duration-700 [transform-style:preserve-3d] ${
-          isFlipped ? '[transform:rotateY(180deg)]' : ''
-        }`}
-      >
-        {/* Front of the star */}
-        <div className="absolute w-full h-full [backface-visibility:hidden]">
-          <svg viewBox="0 0 24 24" fill="currentColor" className={`w-full h-full transition-colors duration-500 ${isDiscovered ? 'text-yellow-400' : 'text-slate-600'}`}>
-            <defs>
-                <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-                    <feGaussianBlur stdDeviation="1.5" result="coloredBlur" />
-                    <feMerge>
-                        <feMergeNode in="coloredBlur" />
-                        <feMergeNode in="SourceGraphic" />
-                    </feMerge>
-                </filter>
-            </defs>
-            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" filter={isDiscovered ? "url(#glow)" : "none"}/>
-          </svg>
-        </div>
-        {/* Back of the star */}
-        <div className="absolute w-full h-full flex items-center justify-center bg-gradient-to-br from-yellow-400 to-amber-500 rounded-full [backface-visibility:hidden] [transform:rotateY(180deg)] shadow-lg shadow-yellow-500/30">
-          <span className="text-4xl md:text-5xl font-black text-slate-800 uppercase" style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.2)' }}>{vowel}</span>
-        </div>
-      </div>
-    </button>
-  );
+    const vowelImage = `/img/estrella${vowel.toUpperCase()}.png`;
+    const defaultImage = '/img/estrella.png';
+
+    return (
+        <button
+            onClick={onClick}
+            className="group w-20 h-20 md:w-24 md:h-24 [perspective:1000px] focus:outline-none focus-visible:ring-4 focus-visible:ring-yellow-300 rounded-full"
+            aria-label={`Reproducir sonido de la vocal ${vowel}`}
+        >
+            <div
+                className={`relative w-full h-full text-center transition-transform duration-700 [transform-style:preserve-3d] ${
+                    isFlipped ? '[transform:rotateY(180deg)]' : ''
+                }`}
+            >
+                {/* Front: default star image */}
+                <div className="absolute w-full h-full [backface-visibility:hidden]">
+                    <img src={defaultImage} alt="estrella" className={`w-full h-full object-contain rounded-full ${isDiscovered ? 'brightness-105' : ''}`} />
+                </div>
+
+                {/* Back: vowel-specific star image (visible when flipped) */}
+                <div className="absolute w-full h-full flex items-center justify-center [backface-visibility:hidden] [transform:rotateY(180deg)]">
+                    <img src={vowelImage} alt={`estrella ${vowel}`} className="w-full h-full object-contain rounded-full shadow-lg" />
+                </div>
+            </div>
+        </button>
+    );
 };
 
 
@@ -102,19 +95,6 @@ const VowelGame: React.FC<VowelGameProps> = ({ student, character, score, progre
     const [discoveredVowels, setDiscoveredVowels] = useState<Set<string>>(new Set());
     const [showIntro, setShowIntro] = useState(true);
 
-    // Determine background image based on character
-    const getBackgroundImage = () => {
-        if (character.color === 'yellow') {
-            return '/img/fondo_nivel1_sparky.png';
-        } else if (character.color === 'purple') {
-            return '/img/fondo_nivel1_rocky.png';
-        }
-        return '/img/fondo_nivel1_sparky.png'; // Default fallback
-    };
-    const [activeVowel, setActiveVowel] = useState<string | null>(null);
-    const [discoveredVowels, setDiscoveredVowels] = useState(new Set<string>());
-    const [showIntro, setShowIntro] = useState(true);
-
     useEffect(() => {
         if (discoveredVowels.size === vowels.length) {
             // El nivel terminó, notificar al padre
@@ -143,15 +123,7 @@ const VowelGame: React.FC<VowelGameProps> = ({ student, character, score, progre
     };
 
     return (
-        <div 
-            className="w-full h-full flex flex-col items-center justify-between p-4 rounded-2xl border border-slate-700 relative overflow-hidden"
-            style={{
-                backgroundImage: `url(${getBackgroundImage()})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat',
-            }}
-        >
+        <div className="w-full h-full flex flex-col items-center justify-between p-4 bg-slate-900/30 rounded-2xl border border-slate-700 relative overflow-hidden">
              {showIntro && (
                 <div className="absolute inset-0 bg-black/70 backdrop-blur-md z-30 flex items-center justify-center p-4">
                     <div className="w-full max-w-lg bg-slate-800/90 border border-slate-500 rounded-3xl p-8 flex flex-col items-center text-center shadow-2xl animate-fade-in-up">
