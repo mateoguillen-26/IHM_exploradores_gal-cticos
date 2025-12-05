@@ -75,7 +75,7 @@ const WORDS: WordConfig[] = [
     }
 ];
 
-// --- Meteorite SVG Component ---
+// --- Meteorite Image Component ---
 const Meteorite: React.FC<{ 
     content: string; 
     isInput: boolean; 
@@ -84,31 +84,18 @@ const Meteorite: React.FC<{
     onClick?: () => void;
     isCorrect?: boolean;
 }> = ({ content, isInput, isFilled, isActiveInput, onClick, isCorrect }) => {
+    // Randomly select one of the 4 meteorite images
+    const meteoriteImage = `/img/met${Math.floor(Math.random() * 4) + 1}.png`;
+    
     return (
         <div 
             onClick={isInput ? onClick : undefined}
-            className={`relative flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 transition-all duration-300 ${isInput ? 'cursor-pointer' : ''} ${isActiveInput ? 'scale-110 z-10 drop-shadow-[0_0_8px_rgba(251,191,36,0.8)]' : ''}`}
+            className={`relative flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 transition-all duration-300 ${isInput ? 'cursor-pointer' : ''} ${isActiveInput ? 'scale-110 z-10 drop-shadow-[0_0_8px_rgba(251,191,36,0.8)]' : ''}`}
         >
-             <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full drop-shadow-md">
-                 <defs>
-                     <radialGradient id="meteorGradient" cx="0.3" cy="0.3" r="0.8">
-                         <stop offset="0%" stopColor="#94a3b8" />
-                         <stop offset="80%" stopColor="#475569" />
-                         <stop offset="100%" stopColor="#1e293b" />
-                     </radialGradient>
-                 </defs>
-                 {/* Irregular Rock Shape */}
-                 <path 
-                    d="M 50 5 Q 80 0 90 30 Q 100 60 75 90 Q 50 100 25 85 Q 0 70 10 40 Q 15 10 50 5" 
-                    fill={isInput && !isFilled ? "#334155" : (isCorrect ? "#10b981" : "url(#meteorGradient)")} 
-                    stroke={isActiveInput ? "#fbbf24" : (isCorrect ? "#059669" : "#1e293b")} 
-                    strokeWidth={isActiveInput || isCorrect ? "4" : "1"}
-                    strokeDasharray={isInput && !isFilled && !isActiveInput ? "5,3" : "none"}
-                 />
-             </svg>
+             <img src={meteoriteImage} alt="meteorite" className="absolute inset-0 w-full h-full object-contain drop-shadow-md" />
              
              {/* Text Content */}
-             <span className={`relative z-10 text-2xl font-black ${isInput ? "text-yellow-400" : "text-white"}`}>
+             <span className={`relative z-10 text-3xl sm:text-4xl font-black ${isInput ? "text-yellow-400" : "text-white"} drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]`}>
                  {content}
              </span>
         </div>
@@ -241,7 +228,7 @@ const LevelFour: React.FC<LevelFourProps> = ({ student, score, progress, onScore
 
 
     return (
-        <div className="w-full h-full flex flex-col p-4 bg-slate-900 rounded-2xl border border-slate-700 relative overflow-hidden">
+        <div className="w-full h-full flex flex-col p-4 rounded-2xl border border-slate-700 relative overflow-hidden" style={{ backgroundImage: "url('/img/fondo 1 4.jpg')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
              
              {/* Header */}
             <header className="w-full flex justify-between items-center p-4 bg-slate-800/80 rounded-xl mb-4 z-20">

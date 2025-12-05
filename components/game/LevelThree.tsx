@@ -333,24 +333,24 @@ const LevelThree: React.FC<LevelThreeProps> = ({ student, score, progress, onSco
                                     onTouchEnd={() => handlePointUp(p.id)}
                                     className="cursor-pointer"
                                 >
+                                    {/* Star Image */}
+                                    <image 
+                                        x={p.x - 6} 
+                                        y={p.y - 6} 
+                                        width="12" 
+                                        height="12" 
+                                        href="/img/estrella nivel 3.png"
+                                        className={`transition-all ${isStart ? 'filter drop-shadow-[0_0_8px_rgba(251,191,36,1)]' : ''}`}
+                                        style={{ opacity: isConnected ? 0.8 : 1 }}
+                                    />
+                                    
                                     {/* Hit Area (Larger) */}
                                     <circle cx={p.x} cy={p.y} r="8" fill="transparent" />
-                                    
-                                    {/* Visual Star */}
-                                    <circle 
-                                        cx={p.x} cy={p.y} 
-                                        r={isStart ? 3 : 2} 
-                                        fill={isConnected ? "#4ade80" : "white"} 
-                                        className={`transition-all ${isStart ? 'scale-150' : ''}`}
-                                    />
-                                    {/* Glow */}
-                                    <circle cx={p.x} cy={p.y} r="4" fill={isConnected ? "#4ade80" : "white"} opacity="0.3" className="animate-pulse" />
                                 </g>
                             )
                         })}
                     </svg>
                 </div>
-                <div className="mt-6 text-slate-400 text-sm">Une las estrellas para formar la constelación</div>
             </div>
         );
     };

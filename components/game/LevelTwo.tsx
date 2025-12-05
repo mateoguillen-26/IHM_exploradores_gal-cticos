@@ -41,20 +41,16 @@ const Martian: React.FC<{ vowel: string, className?: string, onClick?: () => voi
 };
 
 const Crater: React.FC<{ isOpen: boolean, onClick: () => void, children?: React.ReactNode }> = ({ isOpen, onClick, children }) => (
-    <div className="relative w-32 h-32 flex items-center justify-center">
-        <div 
-            onClick={onClick}
-            className={`absolute bottom-0 w-32 h-12 bg-slate-700 rounded-[100%] border-4 border-slate-600 transition-all duration-300 cursor-pointer hover:bg-slate-600 ${isOpen ? 'opacity-0 pointer-events-none' : 'opacity-100 z-20'}`}
-        >
-             <div className="w-full h-full bg-black/30 rounded-[100%] scale-90 blur-sm"></div>
-        </div>
+    <div className="relative w-32 h-32 flex items-center justify-center cursor-pointer" onClick={onClick}>
+        <img 
+            src="/img/Crater.png"
+            alt="Crater"
+            className={`w-full h-full object-contain transition-all duration-300 ${isOpen ? 'opacity-50' : 'opacity-100'}`}
+        />
         
-        <div className={`transition-all duration-500 transform ${isOpen ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-10 opacity-0 scale-50'} z-10`}>
+        <div className={`absolute transition-all duration-500 transform ${isOpen ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-10 opacity-0 scale-50'} z-10`}>
             {children}
         </div>
-        
-        {/* Background Hole when open */}
-        {isOpen && <div className="absolute bottom-0 w-28 h-8 bg-black/60 rounded-[100%] blur-md -z-0"></div>}
     </div>
 );
 
@@ -246,7 +242,7 @@ const LevelTwo: React.FC<LevelTwoProps> = ({ student, score, progress, onScoreCh
     // --- RENDERERS ---
 
     const renderPhase1 = () => (
-        <div className="flex flex-wrap justify-center items-end gap-8 h-full pb-20">
+        <div className="flex flex-wrap justify-center items-end gap-8 h-full pb-20" style={{ marginTop: '190px' }}>
             {vowels.map((vowel, index) => (
                 <div key={index} className="flex flex-col items-center">
                     <Crater isOpen={cratersOpen[index]} onClick={() => handleCraterClick(index)}>

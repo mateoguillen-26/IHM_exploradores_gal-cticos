@@ -123,7 +123,7 @@ const VowelGame: React.FC<VowelGameProps> = ({ student, character, score, progre
     };
 
     return (
-        <div className="w-full h-full flex flex-col items-center justify-between p-4 bg-slate-900/30 rounded-2xl border border-slate-700 relative overflow-hidden">
+        <div className="w-full h-full flex flex-col items-center justify-between p-4 rounded-2xl border border-slate-700 relative overflow-hidden" style={{ backgroundImage: "url('/img/fondo 1 4.jpg')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
              {showIntro && (
                 <div className="absolute inset-0 bg-black/70 backdrop-blur-md z-30 flex items-center justify-center p-4">
                     <div className="w-full max-w-lg bg-slate-800/90 border border-slate-500 rounded-3xl p-8 flex flex-col items-center text-center shadow-2xl animate-fade-in-up">
