@@ -17,132 +17,26 @@ interface LevelTwoProps {
 
 // --- Componentes SVG Auxiliares ---
 
-// Marciano dinámico que cambia según la vocal
+// Marciano image-based component that uses PNG files
 const Martian: React.FC<{ vowel: string, className?: string, onClick?: () => void }> = ({ vowel, className, onClick }) => {
     
-    // Configuración visual única para cada vocal
-    const styles: Record<string, any> = {
-        'a': { 
-            body: '#ef4444', // Rojo
-            belly: '#fecaca',
-            stroke: '#b91c1c',
-            type: 'one-eye-antenna' 
-        },
-        'e': { 
-            body: '#3b82f6', // Azul
-            belly: '#dbeafe',
-            stroke: '#1d4ed8',
-            type: 'two-eyes-ears' 
-        },
-        'i': { 
-            body: '#fbbf24', // Amarillo
-            belly: '#fef3c7',
-            stroke: '#b45309',
-            type: 'three-eyes' 
-        },
-        'o': { 
-            body: '#22c55e', // Verde
-            belly: '#dcfce7',
-            stroke: '#15803d',
-            type: 'classic' 
-        },
-        'u': { 
-            body: '#a855f7', // Morado
-            belly: '#f3e8ff',
-            stroke: '#7e22ce',
-            type: 'horns' 
+    // Get image path based on vowel
+    const getMarcianoImage = () => {
+        const vowelLower = vowel.toLowerCase();
+        // Handle special case for 'i' which is lowercase in filename
+        if (vowelLower === 'i') {
+            return `/img/Marciano i.png`;
         }
+        return `/img/Marciano ${vowel.toUpperCase()}.png`;
     };
 
-    const s = styles[vowel.toLowerCase()] || styles['o'];
-
     return (
-        <svg viewBox="0 0 100 100" className={`cursor-pointer ${className}`} onClick={onClick}>
-            {/* Accesorios de cabeza (Antenas/Orejas/Cuernos) - Renderizados DETRÁS del cuerpo */}
-            {s.type === 'one-eye-antenna' && (
-                 <path d="M50 20 L50 5" stroke={s.stroke} strokeWidth="4" strokeLinecap="round" />
-            )}
-            {s.type === 'two-eyes-ears' && (
-                <>
-                    <path d="M30 25 L20 10" stroke={s.stroke} strokeWidth="4" strokeLinecap="round" />
-                    <circle cx="20" cy="10" r="4" fill={s.stroke} />
-                    <path d="M70 25 L80 10" stroke={s.stroke} strokeWidth="4" strokeLinecap="round" />
-                    <circle cx="80" cy="10" r="4" fill={s.stroke} />
-                </>
-            )}
-             {s.type === 'three-eyes' && (
-                <>
-                   <path d="M35 25 L30 15" stroke={s.stroke} strokeWidth="3" />
-                   <path d="M50 20 L50 10" stroke={s.stroke} strokeWidth="3" />
-                   <path d="M65 25 L70 15" stroke={s.stroke} strokeWidth="3" />
-                </>
-            )}
-             {s.type === 'classic' && (
-                 <>
-                    <path d="M 35 25 L 25 15" stroke={s.stroke} strokeWidth="4" strokeLinecap="round" />
-                    <path d="M 65 25 L 75 15" stroke={s.stroke} strokeWidth="4" strokeLinecap="round" />
-                 </>
-            )}
-            {s.type === 'horns' && (
-                 <>
-                    <path d="M 35 25 Q 25 10 40 5" stroke="none" fill={s.stroke} />
-                    <path d="M 65 25 Q 75 10 60 5" stroke="none" fill={s.stroke} />
-                 </>
-            )}
-
-            {/* Cuerpo */}
-            <ellipse cx="50" cy="60" rx="35" ry="38" fill={s.body} stroke={s.stroke} strokeWidth="3" />
-            
-            {/* Panza */}
-            <ellipse cx="50" cy="70" rx="20" ry="12" fill={s.belly} opacity="0.7" />
-
-            {/* Ojos */}
-            {s.type === 'one-eye-antenna' && (
-                <g>
-                    <circle cx="50" cy="50" r="14" fill="white" stroke={s.stroke} strokeWidth="2" />
-                    <circle cx="50" cy="50" r="6" fill="black" />
-                    <circle cx="53" cy="47" r="2" fill="white" />
-                    <circle cx="50" cy="5" r="5" fill="#fbbf24" /> {/* Bombilla antena */}
-                </g>
-            )}
-            {s.type === 'two-eyes-ears' && (
-                <g>
-                    <circle cx="38" cy="50" r="10" fill="white" stroke={s.stroke} strokeWidth="2" />
-                    <circle cx="38" cy="50" r="4" fill="black" />
-                    <circle cx="62" cy="50" r="10" fill="white" stroke={s.stroke} strokeWidth="2" />
-                    <circle cx="62" cy="50" r="4" fill="black" />
-                </g>
-            )}
-             {s.type === 'three-eyes' && (
-                <g>
-                    <circle cx="35" cy="55" r="7" fill="white" stroke={s.stroke} strokeWidth="1" />
-                    <circle cx="35" cy="55" r="2.5" fill="black" />
-                    <circle cx="50" cy="45" r="9" fill="white" stroke={s.stroke} strokeWidth="1" />
-                    <circle cx="50" cy="45" r="3.5" fill="black" />
-                    <circle cx="65" cy="55" r="7" fill="white" stroke={s.stroke} strokeWidth="1" />
-                    <circle cx="65" cy="55" r="2.5" fill="black" />
-                </g>
-            )}
-            {s.type === 'classic' && (
-                 <g>
-                    <circle cx="38" cy="48" r="11" fill="white" stroke={s.stroke} strokeWidth="2" />
-                    <circle cx="38" cy="48" r="4" fill="black" />
-                    <circle cx="62" cy="48" r="11" fill="white" stroke={s.stroke} strokeWidth="2" />
-                    <circle cx="62" cy="48" r="4" fill="black" />
-                 </g>
-            )}
-            {s.type === 'horns' && (
-                 <g>
-                    <circle cx="50" cy="50" r="16" fill="white" stroke={s.stroke} strokeWidth="2" />
-                    <circle cx="50" cy="50" r="5" fill="black" />
-                    {/* Ceja enojada/seria */}
-                    <path d="M 35 40 L 65 40" stroke={s.stroke} strokeWidth="3" />
-                 </g>
-            )}
-
-            {/* Boca */}
-            <path d="M 40 80 Q 50 88 60 80" stroke={s.stroke} strokeWidth="3" fill="none" strokeLinecap="round" />
-        </svg>
+        <img 
+            src={getMarcianoImage()}
+            alt={`Marciano ${vowel}`}
+            className={`cursor-pointer object-contain ${className}`}
+            onClick={onClick}
+        />
     );
 };
 
@@ -327,6 +221,28 @@ const LevelTwo: React.FC<LevelTwoProps> = ({ student, score, progress, onScoreCh
     }
 
 
+    // --- Helper function to get image path for Phase 3 items ---
+    const getItemImagePath = (itemId: string): string => {
+        const itemImageMap: Record<string, string> = {
+            'anillo': '2.3ANILLO',
+            'avion': '2.3AVION',
+            'astronauta': '2.3ASTRONAUTA',
+            'escalera': '2.3ESCALERA',
+            'esponja': '2.3ESPONJA',
+            'estrella': '2.3ESTRELLA',
+            'iglu': '2.3IGLU',
+            'insecto': '2.3INSECTO',
+            'iman': '2.3IMAN',
+            'oso': '2.3OSO',
+            'ojo': '2.3OJO',
+            'oveja': '2.3OVEJA',
+            'uva': '2.3UVA',
+            'unicornio': '2.3UNICORNIO',
+            'uno': '2.3UNO',
+        };
+        return `/img/${itemImageMap[itemId] || itemId}.png`;
+    };
+
     // --- RENDERERS ---
 
     const renderPhase1 = () => (
@@ -403,25 +319,26 @@ const LevelTwo: React.FC<LevelTwoProps> = ({ student, score, progress, onScoreCh
     );
 
     const renderPhase3 = () => (
-        <div className="w-full h-full flex flex-col justify-between py-6 px-2">
+        <div className="w-full h-full flex flex-col justify-between py-12 px-4">
             
-            {/* Containers */}
-            <div className="flex justify-around w-full mb-8">
+            {/* Containers - Positioned to align with background image */}
+            <div className="flex justify-center w-full px-4" style={{ gap: '150px', marginTop: '-38px' }}>
                 {vowels.map((vowel) => {
                     const filledItem = sortedItems[vowel];
                     return (
                         <div 
                             key={vowel} 
                             onClick={() => handleContainerClick(vowel)}
-                            className={`w-16 h-24 sm:w-24 sm:h-32 border-4 border-dashed rounded-xl flex flex-col items-center justify-end p-2 transition-colors relative cursor-pointer
-                                ${filledItem ? 'border-green-500 bg-green-500/10' : 'border-slate-500 bg-slate-800/50 hover:border-yellow-400'}
-                            `}
+                            className="flex flex-col items-center cursor-pointer relative h-56 justify-end w-24 sm:w-32"
                         >
-                            <span className="absolute top-2 text-2xl font-black text-slate-400 uppercase">{vowel}</span>
                             {filledItem ? (
-                                <div className="text-4xl animate-bounce-short">{filledItem.icon}</div>
+                                <div className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center animate-bounce-short">
+                                    <img src={getItemImagePath(filledItem.id)} alt={filledItem.name} className="w-full h-full object-contain" />
+                                </div>
                             ) : (
-                                <div className="text-slate-600 text-xs text-center">Depositar aquí</div>
+                                <div className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center text-slate-400/30 text-xs text-center">
+                                    {vowel.toUpperCase()}
+                                </div>
                             )}
                         </div>
                     )
@@ -440,11 +357,11 @@ const LevelTwo: React.FC<LevelTwoProps> = ({ student, score, progress, onScoreCh
                         <button
                             key={item.id}
                             onClick={() => handleItemClick(item)}
-                            className={`w-20 h-20 bg-white rounded-full flex items-center justify-center text-4xl shadow-lg transform transition-all hover:scale-110 
+                            className={`w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg transform transition-all hover:scale-110 
                                 ${isSelected ? 'ring-4 ring-yellow-400 scale-110 -translate-y-2' : ''}
                             `}
                         >
-                            {item.icon}
+                            <img src={getItemImagePath(item.id)} alt={item.name} className="w-16 h-16 object-contain" />
                         </button>
                     );
                 })}
@@ -456,7 +373,15 @@ const LevelTwo: React.FC<LevelTwoProps> = ({ student, score, progress, onScoreCh
     );
 
     return (
-        <div className="w-full h-full flex flex-col p-4 bg-slate-900 rounded-2xl border border-slate-700 relative overflow-hidden">
+        <div 
+            className="w-full h-full flex flex-col p-4 rounded-2xl border border-slate-700 relative overflow-hidden"
+            style={{
+                backgroundImage: phase === 3 ? `url(/img/fondo_Nivel2.3.png)` : `url(/img/fondo_nivel2.png)`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+            }}
+        >
              
              {/* Header */}
             <header className="w-full flex justify-between items-center p-4 bg-slate-800/80 rounded-xl mb-4">
@@ -468,7 +393,7 @@ const LevelTwo: React.FC<LevelTwoProps> = ({ student, score, progress, onScoreCh
             </header>
 
             {/* Game Area */}
-            <div className="flex-1 relative bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] bg-repeat">
+            <div className="flex-1 relative bg-transparent">
                 {phase === 1 && renderPhase1()}
                 {phase === 2 && renderPhase2()}
                 {phase === 3 && renderPhase3()}

@@ -125,12 +125,13 @@ const LevelThree: React.FC<LevelThreeProps> = ({ student, score, progress, onSco
     const startIntroAnimations = () => {
         setShowDialog(false);
         setAnimating(true);
-        runAnimationSequence(0);
+        setIntroIndex(0);
     };
 
-    const runAnimationSequence = (index: number) => {
-        if (index >= LETTERS.length) {
-            // End of intro
+    const handleIntroVideoEnded = () => {
+        if (introIndex < LETTERS.length - 1) {
+            setIntroIndex(prev => prev + 1);
+        } else {
             setAnimating(false);
             setDialogContent({ 
                 text: "Ahora nos toca trazar la letra para formar la constelación", 
@@ -139,20 +140,17 @@ const LevelThree: React.FC<LevelThreeProps> = ({ student, score, progress, onSco
             setShowDialog(true);
             setPhase('game');
             setCurrentLetterIndex(0);
-            return;
         }
-
-        setIntroIndex(index);
-        const letter = LETTERS[index];
-        const utterance = new SpeechSynthesisUtterance(letter.letter);
-        utterance.lang = 'es-ES';
-        window.speechSynthesis.speak(utterance);
-
-        // Wait for animation duration (e.g., 3s) + pause (1s)
-        setTimeout(() => {
-            runAnimationSequence(index + 1);
-        }, 4000);
     };
+
+    useEffect(() => {
+        if (animating) {
+            const letter = LETTERS[introIndex];
+            const utterance = new SpeechSynthesisUtterance(letter.letter);
+            utterance.lang = 'es-ES';
+            window.speechSynthesis.speak(utterance);
+        }
+    }, [introIndex, animating]);
 
     const handleDialogNext = () => {
         if (phase === 'intro') {
@@ -257,45 +255,16 @@ const LevelThree: React.FC<LevelThreeProps> = ({ student, score, progress, onSco
         return (
             <div className="flex flex-col items-center justify-center h-full relative">
                 <h2 className="text-4xl text-white font-bold mb-4 animate-pulse">Observa...</h2>
-                <div className="relative w-80 h-80 bg-slate-900/50 rounded-xl border border-slate-600">
-                    <svg viewBox="0 0 100 100" className="w-full h-full">
-                        {/* Stars */}
-                        {letter.points.map(p => (
-                            <circle key={p.id} cx={p.x} cy={p.y} r="2" fill="white" className="animate-pulse" />
-                        ))}
-                        
-                        {/* Animated Path */}
-                        <path 
-                            d={letter.pathD} 
-                            stroke="rgba(255,255,255,0.2)" 
-                            strokeWidth="2" 
-                            fill="none" 
-                        />
-                        <path 
-                            d={letter.pathD} 
-                            stroke="#fbbf24" 
-                            strokeWidth="3" 
-                            fill="none"
-                            strokeLinecap="round"
-                            className="path-animation"
-                        />
-                         {/* Shooting Star Tip */}
-                        <circle r="4" fill="white" className="motion-path-follower">
-                             <animateMotion dur="3s" repeatCount="indefinite" path={letter.pathD} rotate="auto" />
-                        </circle>
-                    </svg>
-                    <style>{`
-                        .path-animation {
-                            stroke-dasharray: 1000;
-                            stroke-dashoffset: 1000;
-                            animation: dash 3s linear forwards;
-                        }
-                        @keyframes dash {
-                            to {
-                                stroke-dashoffset: 0;
-                            }
-                        }
-                    `}</style>
+                <div className="relative w-80 h-80 bg-slate-900/20 rounded-xl border border-slate-600 overflow-hidden">
+                    <video
+                        key={introIndex}
+                        src={`/img/anima${letter.letter}.mp4`}
+                        className="w-full h-full rounded-xl object-cover"
+                        autoPlay
+                        muted
+                        playsInline
+                        onEnded={handleIntroVideoEnded}
+                    />
                 </div>
                 <div className="mt-4 text-6xl font-black text-yellow-400">{letter.letter}</div>
             </div>
@@ -387,7 +356,7 @@ const LevelThree: React.FC<LevelThreeProps> = ({ student, score, progress, onSco
     };
 
     return (
-        <div className="w-full h-full flex flex-col p-4 bg-slate-900 rounded-2xl border border-slate-700 relative overflow-hidden">
+        <div className="w-full h-full flex flex-col p-4 rounded-2xl border border-slate-700 relative overflow-hidden" style={{ backgroundImage: "url('/img/fondo3.png')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
              
             {/* Header */}
             <header className="w-full flex justify-between items-center p-4 bg-slate-800/80 rounded-xl mb-4 z-20">
