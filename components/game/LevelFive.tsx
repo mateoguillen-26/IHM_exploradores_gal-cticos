@@ -85,7 +85,7 @@ const LevelFive: React.FC<LevelFiveProps> = ({ student, score, progress, onScore
     };
 
     return (
-        <div className="w-full h-full flex flex-col p-4 bg-slate-900 rounded-2xl border border-slate-700 relative overflow-hidden">
+        <div className="w-full h-full flex flex-col p-4 rounded-2xl border border-slate-700 relative overflow-hidden" style={{ backgroundImage: "url('/img/fondo 5.png')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
              
              {/* Header */}
             <header className="w-full flex justify-between items-center p-4 bg-slate-800/80 rounded-xl mb-4 z-20">
@@ -133,22 +133,55 @@ const LevelFive: React.FC<LevelFiveProps> = ({ student, score, progress, onScore
 
                     <p className="text-center text-slate-300 font-bold mb-4 uppercase tracking-wider text-sm">Sistema de Navegación Manual</p>
                     
-                    <div className="flex flex-wrap justify-center gap-4">
-                        {SYLLABLES.map((syllable) => (
-                            <button
-                                key={syllable}
-                                onClick={() => handleSyllableClick(syllable)}
-                                disabled={isCorrect}
-                                className={`w-16 h-16 md:w-20 md:h-20 rounded-xl font-black text-2xl shadow-[0_6px_0_rgba(0,0,0,0.3)] active:shadow-none active:translate-y-1 transition-all
-                                    ${isCorrect && syllable === currentChallenge?.syllable 
-                                        ? 'bg-green-500 text-white shadow-none ring-4 ring-green-300' 
-                                        : 'bg-gradient-to-b from-cyan-600 to-cyan-800 text-cyan-100 hover:from-cyan-500 hover:to-cyan-700'
-                                    }
-                                `}
-                            >
-                                {syllable}
-                            </button>
-                        ))}
+                    <div className="flex flex-col items-center gap-4">
+                        {/* First row: 3 buttons */}
+                        <div className="flex justify-center gap-4">
+                            {SYLLABLES.slice(0, 3).map((syllable, index) => {
+                                const buttonImage = `/img/b${index + 1}.png`;
+                                return (
+                                    <button
+                                        key={syllable}
+                                        onClick={() => handleSyllableClick(syllable)}
+                                        disabled={isCorrect}
+                                        className={`relative w-32 h-32 md:w-40 md:h-40 transition-all active:scale-95
+                                            ${isCorrect && syllable === currentChallenge?.syllable 
+                                                ? 'ring-4 ring-green-300 scale-110' 
+                                                : 'hover:scale-105'
+                                            }
+                                        `}
+                                    >
+                                        <img src={buttonImage} alt={syllable} className="absolute inset-0 w-full h-full object-contain" />
+                                        <span className="relative z-10 font-black text-4xl md:text-5xl text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                                            {syllable}
+                                        </span>
+                                    </button>
+                                );
+                            })}
+                        </div>
+                        {/* Second row: 2 buttons */}
+                        <div className="flex justify-center gap-4">
+                            {SYLLABLES.slice(3, 5).map((syllable, index) => {
+                                const buttonImage = `/img/b${index + 4}.png`;
+                                return (
+                                    <button
+                                        key={syllable}
+                                        onClick={() => handleSyllableClick(syllable)}
+                                        disabled={isCorrect}
+                                        className={`relative w-32 h-32 md:w-40 md:h-40 transition-all active:scale-95
+                                            ${isCorrect && syllable === currentChallenge?.syllable 
+                                                ? 'ring-4 ring-green-300 scale-110' 
+                                                : 'hover:scale-105'
+                                            }
+                                        `}
+                                    >
+                                        <img src={buttonImage} alt={syllable} className="absolute inset-0 w-full h-full object-contain" />
+                                        <span className="relative z-10 font-black text-4xl md:text-5xl text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                                            {syllable}
+                                        </span>
+                                    </button>
+                                );
+                            })}
+                        </div>
                     </div>
                 </div>
 

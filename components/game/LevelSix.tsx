@@ -321,7 +321,7 @@ const LevelSix: React.FC<LevelSixProps> = ({ student, character, score, progress
     );
 
     return (
-        <div className="w-full h-full flex flex-col p-4 bg-slate-900 rounded-2xl border border-slate-700 relative overflow-hidden">
+        <div className="w-full h-full flex flex-col p-4 rounded-2xl border border-slate-700 relative overflow-hidden" style={{ backgroundImage: "url('/img/fondo 6.png')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
              
              {/* Header */}
             <header className="w-full flex justify-between items-center p-4 bg-slate-800/80 rounded-xl mb-4 z-20">
