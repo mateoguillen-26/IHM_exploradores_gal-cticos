@@ -12,6 +12,7 @@ interface LevelSixProps {
     onScoreChange: (newScore: number) => void;
     onComplete: () => void;
     onQuit: () => void;
+    userEmail?: string;
 }
 
 interface WordCard {
@@ -30,14 +31,14 @@ const WORDS_DATA: WordCard[] = [
     { id: 'mima', text: 'mima', image: '🤗', widthClass: 'w-32' },
 ];
 
-const LevelSix: React.FC<LevelSixProps> = ({ student, character, score, progress, onScoreChange, onComplete, onQuit }) => {
+const LevelSix: React.FC<LevelSixProps> = ({ student, character, score, progress, onScoreChange, onComplete, onQuit, userEmail }) => {
     
     // Game State
     const [slots, setSlots] = useState<(WordCard | null)[]>([null, null, null, null]);
     const [availableWords, setAvailableWords] = useState<WordCard[]>([]);
     
     const [showIntroDialog, setShowIntroDialog] = useState(true);
-    const [victoryPhase, setVictoryPhase] = useState<'playing' | 'cinematic'>('playing');
+    const [victoryPhase, setVictoryPhase] = useState<'playing' | 'video' | 'complete'>('playing');
     const [cinematicStep, setCinematicStep] = useState(0); // 0: Landed, 1: Laser Charge, 2: Fire, 3: Explosion, 4: Celebration
     const [cinematicText, setCinematicText] = useState<string | null>(null);
 
@@ -105,43 +106,7 @@ const LevelSix: React.FC<LevelSixProps> = ({ student, character, score, progress
     };
 
     const startCinematic = () => {
-        setVictoryPhase('cinematic');
-        
-        const seq = async () => {
-             // Step 0: Initial Scene (Landed)
-            setCinematicStep(0);
-            await new Promise(r => setTimeout(r, 1000));
-            
-            // Step 1: Laser Charge
-            setCinematicStep(1);
-            await new Promise(r => setTimeout(r, 1000));
-
-            // Step 2: Fire Laser
-            setCinematicStep(2);
-            setCinematicText("¡PIU PIU!");
-            // Play Laser Sound effect (simulated)
-            const u = new SpeechSynthesisUtterance("Piu piu"); 
-            u.rate = 2;
-            window.speechSynthesis.speak(u);
-
-            await new Promise(r => setTimeout(r, 1500)); // Laser travel time
-
-            // Step 3: Explosion
-            setCinematicStep(3);
-            setCinematicText("¡BOOM!");
-             const boom = new SpeechSynthesisUtterance("Boom"); 
-             boom.rate = 0.5;
-            window.speechSynthesis.speak(boom);
-            await new Promise(r => setTimeout(r, 2000));
-
-            // Step 4: Celebration
-            setCinematicStep(4);
-            setCinematicText("¡VIVA! ¡LO LOGRAMOS!");
-            const yay = new SpeechSynthesisUtterance("¡Viva! Hemos salvado la tierra."); 
-            window.speechSynthesis.speak(yay);
-        };
-
-        seq();
+        setVictoryPhase('video');
     };
 
     const handleFinishClick = () => {
@@ -151,6 +116,10 @@ const LevelSix: React.FC<LevelSixProps> = ({ student, character, score, progress
         onComplete();
     };
 
+    const handleVideoEnd = () => {
+        setVictoryPhase('complete');
+    };
+
 
     // --- RENDERERS ---
 
@@ -158,9 +127,9 @@ const LevelSix: React.FC<LevelSixProps> = ({ student, character, score, progress
         <div className="flex flex-col items-center justify-between h-full py-8 w-full max-w-4xl relative z-10">
             
             {/* Top: Slots */}
-            <div className="w-full flex flex-col items-center gap-4">
-                <h2 className="text-xl text-cyan-300 font-bold uppercase tracking-widest">Panel de Control del Láser</h2>
-                <div className="flex flex-wrap justify-center gap-2 sm:gap-4 bg-slate-800/50 p-6 rounded-2xl border-2 border-slate-600 w-full min-h-[120px]">
+            <div className="w-full flex flex-col items-center justify-center gap-4">
+                <h2 className="text-xl text-cyan-300 font-bold uppercase tracking-widest text-center">Panel de Control del Láser</h2>
+                <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-4 bg-slate-800/50 p-6 rounded-2xl border-2 border-slate-600 w-full min-h-[120px]">
                     {slots.map((slot, idx) => {
                         const expectedWidth = WORDS_DATA.find(w => w.text === CORRECT_ORDER[idx])?.widthClass || 'w-24';
 
@@ -168,18 +137,18 @@ const LevelSix: React.FC<LevelSixProps> = ({ student, character, score, progress
                             <div 
                                 key={idx}
                                 onClick={() => handleSlotClick(idx)}
-                                className={`h-24 sm:h-32 border-4 border-dashed rounded-xl flex items-center justify-center transition-all cursor-pointer relative
+                                className={`h-24 sm:h-32 border-4 border-dashed rounded-xl flex flex-col items-center justify-center transition-all cursor-pointer relative
                                     ${slot ? 'bg-white border-yellow-400' : 'bg-slate-900/50 border-slate-500'}
                                     ${expectedWidth}
                                 `}
                             >
                                 {slot ? (
-                                    <div className="flex flex-col items-center animate-bounce-short">
+                                    <div className="flex flex-col items-center justify-center animate-bounce-short">
                                         <span className="text-2xl">{slot.image}</span>
-                                        <span className="text-xl sm:text-2xl font-black text-slate-800">{slot.text}</span>
+                                        <span className="text-xl sm:text-2xl font-black text-slate-800 text-center">{slot.text}</span>
                                     </div>
                                 ) : (
-                                    <span className="text-slate-600 text-xs font-bold absolute bottom-2">{idx + 1}</span>
+                                    <span className="text-slate-600 text-xs font-bold">{idx + 1}</span>
                                 )}
                             </div>
                         );
@@ -188,26 +157,39 @@ const LevelSix: React.FC<LevelSixProps> = ({ student, character, score, progress
             </div>
 
             {/* Bottom: Available Words */}
-            <div className="w-full flex flex-wrap justify-center gap-4 sm:gap-8 p-4">
+            <div className="w-full flex flex-wrap justify-center items-center gap-4 sm:gap-8 p-4">
                 {availableWords.map((word) => (
                     <button 
                         key={word.id}
                         onClick={() => handleWordClick(word)}
                         className={`${word.widthClass} h-24 sm:h-32 bg-white rounded-xl shadow-lg border-b-8 border-slate-300 active:border-b-0 active:translate-y-2 transition-all flex flex-col items-center justify-center gap-1 group hover:scale-105`}
                     >
-                        <span className="text-3xl group-hover:animate-spin" style={{animationDuration:'2s'}}>{word.image}</span>
-                        <span className="text-2xl font-black text-slate-800">{word.text}</span>
+                        <span className="text-3xl group-hover:animate-spin text-center" style={{animationDuration:'2s'}}>{word.image}</span>
+                        <span className="text-2xl font-black text-slate-800 text-center">{word.text}</span>
                     </button>
                 ))}
             </div>
         </div>
     );
 
+    const renderFinalVideo = () => {
+        const finalVideo = character.color === 'yellow' ? 'final amarillo.mp4' : 'final morado.mp4';
+        return (
+            <div className="w-full h-full flex items-center justify-center">
+                <video
+                    src={`/img/${finalVideo}`}
+                    className="w-full h-full object-cover rounded-2xl"
+                    autoPlay
+                    muted
+                    playsInline
+                    onEnded={handleVideoEnd}
+                />
+            </div>
+        );
+    };
+
     const renderCinematic = () => (
         <div className="fixed inset-0 z-[9999] bg-slate-900 flex items-center justify-center overflow-hidden w-screen h-screen">
-             
-             {/* Background Sky/Space */}
-             <div className="absolute inset-0 bg-gradient-to-b from-[#0B1026] via-[#2B32B2] to-[#1488CC]"></div>
              
              {/* Stars */}
              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-50"></div>
@@ -334,7 +316,7 @@ const LevelSix: React.FC<LevelSixProps> = ({ student, character, score, progress
 
             {/* Content */}
             <div className="flex-1 relative z-10">
-                {victoryPhase === 'playing' ? renderGame() : renderCinematic()}
+                {victoryPhase === 'playing' ? renderGame() : victoryPhase === 'video' ? renderFinalVideo() : null}
             </div>
 
             {/* Intro Dialog */}
@@ -355,12 +337,36 @@ const LevelSix: React.FC<LevelSixProps> = ({ student, character, score, progress
                  </div>
             )}
             
+            {/* Victory Button - Show after video ends */}
+            {victoryPhase === 'complete' && (
+                <div className="fixed inset-0 bg-black/80 z-[9999] flex items-center justify-center p-4">
+                    <div className="bg-slate-800 border-2 border-green-400 rounded-2xl p-8 max-w-md text-center shadow-2xl animate-fade-in-up">
+                        <div className="text-6xl mb-4">🎉</div>
+                        <h2 className="text-2xl text-green-400 font-black mb-4">¡MISIÓN COMPLETADA!</h2>
+                        <p className="text-lg text-white font-bold mb-6">
+                            ¡Hemos salvado la Tierra! ¡Eres un verdadero héroe galáctico!
+                        </p>
+                        <button 
+                            onClick={handleFinishClick}
+                            className="bg-green-500 hover:bg-green-400 text-white font-bold py-3 px-8 rounded-full text-lg shadow-lg transform hover:scale-105 transition-all"
+                        >
+                            Ver Reporte Final
+                        </button>
+                    </div>
+                 </div>
+            )}
+            
             {/* Quit */}
             {victoryPhase === 'playing' && (
-                <div className="absolute top-4 right-4 md:static md:mt-4 md:flex md:justify-end z-20">
+                <div className="absolute top-4 right-4 md:static md:mt-4 md:flex md:justify-end md:gap-2 z-20">
                     <button onClick={onQuit} className="text-slate-500 hover:text-red-400 text-sm font-bold flex items-center gap-1">
                         Salir
                     </button>
+                    {userEmail === 'mateo@mateo' && (
+                        <button onClick={onComplete} className="px-3 py-1 bg-green-600 hover:bg-green-500 rounded-lg text-white font-bold text-sm">
+                            Skip ⏭️
+                        </button>
+                    )}
                 </div>
             )}
         </div>

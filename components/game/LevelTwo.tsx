@@ -13,6 +13,7 @@ interface LevelTwoProps {
     onScoreChange: (newScore: number) => void;
     onComplete: () => void;
     onQuit: () => void;
+    userEmail?: string;
 }
 
 // --- Componentes SVG Auxiliares ---
@@ -67,7 +68,7 @@ const Sign: React.FC<{ text: string, color?: string, onClick?: () => void, isSel
 );
 
 
-const LevelTwo: React.FC<LevelTwoProps> = ({ student, score, progress, onScoreChange, onComplete, onQuit }) => {
+const LevelTwo: React.FC<LevelTwoProps> = ({ student, score, progress, onScoreChange, onComplete, onQuit, userEmail }) => {
     const vowels = ['a', 'e', 'i', 'o', 'u'];
     const [phase, setPhase] = useState<1 | 2 | 3>(1);
     const [showDialog, setShowDialog] = useState(false);
@@ -413,11 +414,16 @@ const LevelTwo: React.FC<LevelTwoProps> = ({ student, score, progress, onScoreCh
             )}
 
             {/* Footer / Quit */}
-            <div className="absolute top-4 right-4 md:static md:mt-4 md:flex md:justify-end">
+            <div className="absolute top-4 right-4 md:static md:mt-4 md:flex md:justify-end md:gap-2">
                  <button onClick={onQuit} className="text-slate-500 hover:text-red-400 text-sm font-bold flex items-center gap-1">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                     Salir
                 </button>
+                {userEmail === 'mateo@mateo' && (
+                    <button onClick={onComplete} className="px-3 py-1 bg-green-600 hover:bg-green-500 rounded-lg text-white font-bold text-sm">
+                        Skip ⏭️
+                    </button>
+                )}
             </div>
         </div>
     );

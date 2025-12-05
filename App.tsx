@@ -245,6 +245,7 @@ const App: React.FC = () => {
             onErrorChange={setErrors}
             onComplete={handleLevelWin}
             onQuit={handleQuitGame}
+            userEmail={currentUserEmail || undefined}
           />;
         }
         setView('dashboard');
@@ -261,6 +262,7 @@ const App: React.FC = () => {
             onScoreChange={setScore}
             onComplete={handleLevelWin}
             onQuit={handleQuitGame}
+            userEmail={currentUserEmail || undefined}
           />
         }
         setView('dashboard');
@@ -277,6 +279,7 @@ const App: React.FC = () => {
             onScoreChange={setScore}
             onComplete={handleLevelWin}
             onQuit={handleQuitGame}
+            userEmail={currentUserEmail || undefined}
           />
         }
         setView('dashboard');
@@ -293,6 +296,7 @@ const App: React.FC = () => {
             onScoreChange={setScore}
             onComplete={handleLevelWin}
             onQuit={handleQuitGame}
+            userEmail={currentUserEmail || undefined}
           />
         }
         setView('dashboard');
@@ -309,6 +313,7 @@ const App: React.FC = () => {
             onScoreChange={setScore}
             onComplete={handleLevelWin}
             onQuit={handleQuitGame}
+            userEmail={currentUserEmail || undefined}
           />
         }
         setView('dashboard');
@@ -325,6 +330,7 @@ const App: React.FC = () => {
             onScoreChange={setScore}
             onComplete={handleFinalWin}
             onQuit={handleQuitGame}
+            userEmail={currentUserEmail || undefined}
           />
         }
         setView('dashboard');

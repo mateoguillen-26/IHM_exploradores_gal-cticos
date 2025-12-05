@@ -14,6 +14,7 @@ interface VowelGameProps {
     onErrorChange: (newErrorCount: number) => void;
     onComplete: () => void;
     onQuit: () => void;
+    userEmail?: string;
 }
 
 // --- Iconos y Componentes Gráficos ---
@@ -53,43 +54,32 @@ const FlippableStar: React.FC<{
 };
 
 
-const Spaceship: React.FC<{ character: React.ReactNode }> = ({ character }) => (
-    <div className="relative w-64 h-48 animate-float">
-         <style>{`
-            @keyframes float {
-                0%, 100% { transform: translateY(0); }
-                50% { transform: translateY(-10px); }
-            }
-            .animate-float {
-                animation: float 4s ease-in-out infinite;
-            }
-        `}</style>
-        <svg viewBox="0 0 200 150" className="absolute inset-0 w-full h-full">
-            {/* Flames */}
-            <path d="M 15,75 Q 0,70 10,60 L 0,80 Q 0,80 15,75 Z" fill="#F9A825" className="animate-pulse" />
-            <path d="M 20,75 Q 5,72 15,65 L 5,85 Q 5,82 20,75 Z" fill="#FBC02D" className="animate-pulse animation-delay-100" />
-
-            {/* Body */}
-            <path d="M 50,20 C 20,20 20,60 30,75 C 20,90 20,130 50,130 L 150,110 C 190,100 200,60 180,40 C 160,20 100,20 50,20 Z" fill="#B0BEC5"/>
-            <path d="M 55,25 C 30,25 30,60 40,75 C 30,85 30,125 55,125 L 145,105 C 180,95 190,60 170,45 C 155,30 100,25 55,25 Z" fill="#CFD8DC"/>
-            
-            {/* Fin */}
-            <path d="M 70,20 L 90,5 L 110,20 Z" fill="#B0BEC5"/>
-            <path d="M 75,20 L 90,10 L 105,20 Z" fill="#CFD8DC"/>
-
-            {/* Window */}
-            <path d="M 90,40 C 130,40 160,60 150,85 L 80,95 C 70,70 70,40 90,40 Z" fill="#263238"/>
-             <path d="M 92,45 C 125,45 150,60 145,82 L 85,90 C 78,70 75,45 92,45 Z" fill="#455A64"/>
-        </svg>
-        <div className="absolute" style={{ top: '35%', left: '48%', width: '28%', height: '35%' }}>
-            {character}
+const Spaceship: React.FC<{ character: React.ReactNode; characterColor?: string }> = ({ characterColor = 'yellow' }) => {
+    const shipsrc = characterColor === 'yellow' ? '/img/nave amarillo 1.png' : '/img/nave morado 1.png';
+    
+    return (
+        <div className="relative w-64 h-48 animate-float">
+            <style>{`
+                @keyframes float {
+                    0%, 100% { transform: translateY(0); }
+                    50% { transform: translateY(-10px); }
+                }
+                .animate-float {
+                    animation: float 4s ease-in-out infinite;
+                }
+            `}</style>
+            <img 
+                src={shipsrc}
+                alt="Nave" 
+                className="w-full h-full object-contain"
+            />
         </div>
-    </div>
-);
+    );
+};
 
 // --- Componente Principal del Juego ---
 
-const VowelGame: React.FC<VowelGameProps> = ({ student, character, score, progress, onScoreChange, onErrorChange, onComplete, onQuit }) => {
+const VowelGame: React.FC<VowelGameProps> = ({ student, character, score, progress, onScoreChange, onErrorChange, onComplete, onQuit, userEmail }) => {
     const vowels = ['a', 'e', 'i', 'o', 'u'];
     const [activeVowel, setActiveVowel] = useState<string | null>(null);
     const [discoveredVowels, setDiscoveredVowels] = useState<Set<string>>(new Set());
@@ -157,7 +147,7 @@ const VowelGame: React.FC<VowelGameProps> = ({ student, character, score, progre
 
             <main className="flex-1 w-full flex flex-col md:flex-row items-center justify-around p-4 relative">
                 <div className="mb-8 md:mb-0">
-                    <Spaceship character={<character.Component className="w-full h-full" />} />
+                    <Spaceship characterColor={character.color} />
                 </div>
                 
                 <div className="flex flex-wrap items-center justify-center gap-4 md:gap-8 w-full md:max-w-md">
@@ -173,11 +163,16 @@ const VowelGame: React.FC<VowelGameProps> = ({ student, character, score, progre
                 </div>
             </main>
 
-            <footer className="w-full z-10 mt-4 flex justify-start">
+            <footer className="w-full z-10 mt-4 flex justify-between">
                 <button onClick={onQuit} className="px-4 py-2 bg-slate-700 hover:bg-red-600/80 rounded-lg text-slate-300 hover:text-white font-bold transition-colors text-sm flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
                     Abandonar Misión
                 </button>
+                {userEmail === 'mateo@mateo' && (
+                    <button onClick={onComplete} className="px-4 py-2 bg-green-600 hover:bg-green-500 rounded-lg text-white font-bold transition-colors text-sm flex items-center gap-2">
+                        Skip ⏭️
+                    </button>
+                )}
             </footer>
         </div>
     );

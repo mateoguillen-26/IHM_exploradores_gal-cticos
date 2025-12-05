@@ -12,6 +12,7 @@ interface LevelFiveProps {
     onScoreChange: (newScore: number) => void;
     onComplete: () => void;
     onQuit: () => void;
+    userEmail?: string;
 }
 
 interface WordChallenge {
@@ -32,7 +33,7 @@ const CHALLENGES: WordChallenge[] = [
 
 const SYLLABLES = ['MA', 'ME', 'MI', 'MO', 'MU'];
 
-const LevelFive: React.FC<LevelFiveProps> = ({ student, score, progress, onScoreChange, onComplete, onQuit }) => {
+const LevelFive: React.FC<LevelFiveProps> = ({ student, score, progress, onScoreChange, onComplete, onQuit, userEmail }) => {
     const [gameQueue, setGameQueue] = useState<WordChallenge[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [showDialog, setShowDialog] = useState(true);
@@ -206,10 +207,15 @@ const LevelFive: React.FC<LevelFiveProps> = ({ student, score, progress, onScore
             )}
             
             {/* Quit */}
-            <div className="absolute top-4 right-4 md:static md:mt-4 md:flex md:justify-end z-20">
+            <div className="absolute top-4 right-4 md:static md:mt-4 md:flex md:justify-end md:gap-2 z-20">
                  <button onClick={onQuit} className="text-slate-500 hover:text-red-400 text-sm font-bold flex items-center gap-1">
                     Salir
                 </button>
+                {userEmail === 'mateo@mateo' && (
+                    <button onClick={onComplete} className="px-3 py-1 bg-green-600 hover:bg-green-500 rounded-lg text-white font-bold text-sm">
+                        Skip ⏭️
+                    </button>
+                )}
             </div>
         </div>
     );
